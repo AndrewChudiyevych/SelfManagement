@@ -15,7 +15,8 @@ export default function MyBoards () {
     const [deleteBoard, setDeleteBoard] = useState(false);
 
     const getAllBoard = (async() => {
-        const responce = fetch('https://borad-todo.herokuapp.com/api/boards/get-all?user=61a3788b753e9771d447d400', {
+      console.log("GETALLBOARD")
+        const responce = fetch('https://borad-todo.herokuapp.com/api/boards/get-all?user=61b0741e9ee4f8499a70a491', {
                 method: 'GET',
                 headers: {
                 Accept: 'application/json',
@@ -27,9 +28,10 @@ export default function MyBoards () {
             const check = await responce;
             console.log(responce);
             console.log(check);
-
+            
+            
             if(!check.error) {
-                setToDo(check.board);
+                setBoard(check.boards);
             }
     });
 
@@ -52,11 +54,8 @@ export default function MyBoards () {
 
 
     const deleteItem = async (key) => {
-        //setData((prevTodo) => {
-        //return prevTodo.filter((todo) => todo.key != key);
-        //});
-
-        const responce = fetch(`https://borad-todo.herokuapp.com/api/boards/delete-one?user=61a37838753e9771d447d3fc&boardID=${key}`, {
+      console.log("DELETEBOARD")
+        const responce = fetch(`https://borad-todo.herokuapp.com/api/boards/delete-one?user=61b0741e9ee4f8499a70a491&boardID=${key}`, {
                 method: 'GET',
                 headers: {
                 Accept: 'application/json',
@@ -68,8 +67,9 @@ export default function MyBoards () {
             const check = await responce;
             console.log(responce);
             console.log(check);
-            setDeleteToDo(true);
-
+            setDeleteBoard(true);
+            getAllBoard();
+            
         };
 
     return (
@@ -81,11 +81,10 @@ export default function MyBoards () {
             keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
               <BoardList item={item} deleteItem={deleteItem}/>
-              
             )}
           />
           <View>
-            <AddBoardInput submitHandler={submitHandler} setDeleteToDo={setDeleteBoard} />
+            <AddBoardInput submitHandler={submitHandler} setDeleteBoard={setDeleteBoard} setter={setBoard} />
           </View>
         </View>
       </ComponentContainer>

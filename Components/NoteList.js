@@ -13,10 +13,10 @@ export default function NoteList({ item, deleteItem}) {
             <Entypo name="circle" size={20} color="midnightblue" />
           </CirlceContainer>
           <View>
-            <TextItem>{item.name}</TextItem>
-            <TextDate> Board</TextDate>
+            <TextItem>{item.body}</TextItem>
+            <TextDate> Task</TextDate>
           </View>
-          <IconContainer onPress={() => deleteItem(item._id)}>
+          <IconContainer onPress={() => deleteItem(item.id)}>
             <MaterialIcons name="delete" size={24} color="midnightblue" />
           </IconContainer>
         </ListContainer>
@@ -48,7 +48,7 @@ export default function NoteList({ item, deleteItem}) {
     font-size: 20px;
     margin-top: 10px;
     margin-right: 20px;
-    font-family: poppins-regular;
+  
   `;
   
   const TextDate = styled.Text`
@@ -56,7 +56,7 @@ export default function NoteList({ item, deleteItem}) {
     font-size: 15px;
     margin-right: 20px;
   
-    font-family: poppins-regular;
+    
     border-radius: 10px;
     width: 40px;
   `;

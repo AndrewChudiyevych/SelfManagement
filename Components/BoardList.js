@@ -3,10 +3,14 @@ import { View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import styled from "styled-components";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/core";
 
 export default function BoardList({ item, deleteItem}) {
 
+
     return (
+      
       <ComponentContainer>
         <ListContainer>
           <CirlceContainer>
@@ -21,6 +25,7 @@ export default function BoardList({ item, deleteItem}) {
           </IconContainer>
         </ListContainer>
       </ComponentContainer>
+      
     );
   }
   
@@ -48,7 +53,7 @@ export default function BoardList({ item, deleteItem}) {
     font-size: 20px;
     margin-top: 10px;
     margin-right: 20px;
-    font-family: poppins-regular;
+    
   `;
   
   const TextDate = styled.Text`
@@ -56,7 +61,7 @@ export default function BoardList({ item, deleteItem}) {
     font-size: 15px;
     margin-right: 20px;
   
-    font-family: poppins-regular;
+  
     border-radius: 10px;
     width: 40px;
   `;

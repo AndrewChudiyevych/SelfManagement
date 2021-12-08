@@ -8,16 +8,15 @@ import AddToDoInput from '../Components/AddToDoInput';
 import TodoList from '../Components/ToDoList';
 
 
-export default function ToDo () {
+export default function ToDo ({route}) {
 
+    const {boardId} = route.params;
     const [toDo, setToDo] = useState([]);
     const [data, setData] = useState([]);
     const [deleteToDo, setDeleteToDo] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
     const getAllToDo = (async() => {
-        setIsLoading(true);
-        const responce = fetch('https://borad-todo.herokuapp.com/api/todo/get-all?board=61a3a23112cf9b8eff8f8d7e', {
+        const responce = fetch(`https://borad-todo.herokuapp.com/api/todo/get-all?board=${boardId}`, {
                 method: 'GET',
                 headers: {
                 Accept: 'application/json',
@@ -25,27 +24,20 @@ export default function ToDo () {
                 'authorization': 'test'
                 }
 
-            }).then((resp) => { return resp.json()}).catch((err) => { return err}).finally(() => setIsLoading(true))
+            }).then((resp) => { return resp.json()}).catch((err) => { return err})
             const check = await responce;
             console.log(responce);
             console.log(check);
+            console.log('request is here!')
 
             if(!check.error) {
                 setToDo(check.todos);
             }
     });
 
-    /*const getAllToDo = () => {
-      setIsLoading(true)
-      let URL = 'https://borad-todo.herokuapp.com/api/boards/get-all?user=61a3788b753e9771d447d400'
-      fetch(URL).then(res => res.json()).then(res => {
-        setData(res)
-      }).finally(() => setIsLoading(true))
-    }*/
-
     useEffect(() => {
         getAllToDo();
-    }, [deleteToDo]);
+    }, [deleteToDo, boardId]);
 
 
     const submitHandler = (value) => {
@@ -62,9 +54,6 @@ export default function ToDo () {
 
 
     const deleteItem = async (key) => {
-        //setData((prevTodo) => {
-        //return prevTodo.filter((todo) => todo.key != key);
-        //});
 
         const responce = fetch(`https://borad-todo.herokuapp.com/api/todo/delete-one?todoID=${key}`, {
                 method: 'GET',
@@ -79,6 +68,7 @@ export default function ToDo () {
             console.log(responce);
             console.log(check);
             setDeleteToDo(true);
+            getAllToDo();
 
         };
 
@@ -93,11 +83,9 @@ export default function ToDo () {
               <TodoList item={item} deleteItem={deleteItem}/>
               
             )}
-            onRefresh = {getAllToDo}
-            refreshing = {isLoading}
           />
           <View>
-            <AddToDoInput submitHandler={submitHandler} setDeleteToDo={setDeleteToDo} />
+            <AddToDoInput boardId={boardId} submitHandler={submitHandler} setDeleteToDo={setDeleteToDo} setter={setToDo}/>
           </View>
         </View>
       </ComponentContainer>

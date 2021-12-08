@@ -49,7 +49,7 @@ export default function TodoList({ item, deleteItem}) {
     font-size: 20px;
     margin-top: 10px;
     margin-right: 20px;
-    font-family: poppins-regular;
+  
   `;
   
   const TextDate = styled.Text`
@@ -57,7 +57,7 @@ export default function TodoList({ item, deleteItem}) {
     font-size: 15px;
     margin-right: 20px;
   
-    font-family: poppins-regular;
+    
     border-radius: 10px;
     width: 40px;
   `;

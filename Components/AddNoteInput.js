@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { AntDesign } from "@expo/vector-icons";
+import { getAllNote } from "../Helpers/FetchNotes";
 
-export default function AddNoteInput({ submitHandler,setDeleteToDo}) {
+export default function AddNoteInput({ submitHandler, setDeleteNote, setter}) {
     const [value, setValue] = useState("");
     const myTextInput = React.createRef();
+    const [noteName, setNoteName] = useState("");
 
     const onChangeText = (text) => {
         setValue(text);
@@ -14,28 +16,33 @@ export default function AddNoteInput({ submitHandler,setDeleteToDo}) {
     return(
         <ComponentContainer>
         <InputContainer>
-          <Input ref={myTextInput}  placeholder="Add Note..." onChangeText={onChangeText} clearButtonMode='always' />
+          <Input ref={myTextInput}  placeholder="Add Note..." onChangeText={text => setNoteName(text)} clearButtonMode='always' />
         </InputContainer>
         <SubmitButton 
           onPress={async() => {
-            const responce = fetch('​​https://borad-todo.herokuapp.com/api/boards/create-board', {
+            console.log(setNoteName)
+            const responce = fetch('https://api-note-manager.herokuapp.com/v1/notes', {
               method: 'POST',
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'authorization': 'test'
+                'authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTYzODk1NDA0NSwiZXhwIjoxNjM5MDQxMDQ1fQ.MR9scvL9Wt1QuLlzRje8XmlEV2NCwCC5MfxXwf_kp8YGvVFHwjUEC-lJ65FWcXS-nro65Ff47tXsqOVUp7CyNA'
               },
               body: JSON.stringify({
-                "name": "Test Shool",
-                "user": "61a3788b753e9771d447d400"
+                "body": noteName,
+                "user": "61b0741e9ee4f8499a70a491" 
             })  
           }).then((resp) => { return resp.json()}).catch((err) => { return err})
             setValue(submitHandler(value));
             const check = await responce;
-            console.log(responce);
-            console.log(check);
-            setDeleteToDo(true);
-            myTextInput.current.clear();
+            console.log("Create request")
+            console.log(check)
+            //console.log(responce);
+            const getAllNoteCheck = await getAllNote();
+            setter(getAllNoteCheck);
+            console.log("GE Notes")
+            console.log(getAllNoteCheck);
+            setDeleteNote(true);
           }}
         >
           <AntDesign name="plus" size={24} color="midnightblue" />
@@ -55,7 +62,6 @@ const InputContainer = styled.View`
 `;
 
 const Input = styled.TextInput`
-  font-family: poppins-regular;
   font-size: 20px;
   background-color: white;
   width: 300px;

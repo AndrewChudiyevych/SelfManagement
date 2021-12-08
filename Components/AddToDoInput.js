@@ -1,25 +1,28 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { AntDesign } from "@expo/vector-icons";
+import { getAllToDo } from "../Helpers/FetchHelper";
 
-export default function AddToDoInput({ submitHandler,setDeleteToDo}) {
+export default function AddToDoInput({ submitHandler,setDeleteToDo , setter, boardId}) {
     const [value, setValue] = useState("");
+    const [toDoName, setToDoName] = useState("");
     const myTextInput = React.createRef();
-    const [isLoading, setIsLoading] = useState(false);
+    //const [isLoading, setIsLoading] = useState(false);
 
+    console.log(boardId);
     const onChangeText = (text) => {
         setValue(text);
     };
 
-
     return(
         <ComponentContainer>
         <InputContainer>
-          <Input ref={myTextInput}  placeholder="Add Task..." onChangeText={onChangeText} clearButtonMode='always' />
+          <Input ref={myTextInput}  placeholder="Add Task..." onChangeText={text => setToDoName(text)} clearButtonMode='always' />
         </InputContainer>
         <SubmitButton 
           onPress={async() => {
-            setIsLoading(true);
+            console.log(setToDoName);
+            //setIsLoading(true);
             const responce = fetch('https://borad-todo.herokuapp.com/api/todo/create-todo', {
               method: 'POST',
               headers: {
@@ -28,20 +31,22 @@ export default function AddToDoInput({ submitHandler,setDeleteToDo}) {
                 'authorization': 'test'
               },
               body: JSON.stringify({
-                "name": "test4",
+                "name": toDoName,
                 "user": "61a3788b753e9771d447d400",
-                "board": "61a3a23112cf9b8eff8f8d7e",
+                "board": boardId,
                 "description": "do something ",
                 "estimatedTime": "24",
                 "priority": "HIGH"
             })  
-          }).then((resp) => { return resp.json()}).catch((err) => { return err}).finally(() => setIsLoading(true))
+          }).then((resp) => { return resp.json()}).catch((err) => { return err}) //.finally(() => setIsLoading(false))
             setValue(submitHandler(value));
             const check = await responce;
-            console.log(responce);
-            console.log(check);
+            //console.log(responce);
+            //console.log(check);
+            const getAllToDOCheck = await getAllToDo(boardId)
+            setter(getAllToDOCheck.todos);
+            console.log(getAllToDOCheck.todos);
             setDeleteToDo(true);
-            myTextInput.current.clear();
           }}
         >
           <AntDesign name="plus" size={24} color="midnightblue" />
@@ -61,7 +66,7 @@ const InputContainer = styled.View`
 `;
 
 const Input = styled.TextInput`
-  font-family: poppins-regular;
+  
   font-size: 20px;
   background-color: white;
   width: 300px;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, StatusBar, FlatList } from 'react-native';
+import { set } from 'react-native-reanimated';
 import styled from 'styled-components'
 
 
@@ -9,29 +10,26 @@ import NoteList from '../Components/NoteList';
 
 
 export default function MyNotes () {
-
     const [note, setNote] = useState([]);
     const [data, setData] = useState([]);
     const [deleteNote, setDeleteNote] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
     const getAllNote = (async() => {
-      setIsLoading(true);
-        const responce = fetch('https://borad-todo.herokuapp.com/api/boards/get-all?user=61a3788b753e9771d447d400', {
+        const responce = fetch('https://api-note-manager.herokuapp.com/v1/notes?user=61b0741e9ee4f8499a70a491', {
                 method: 'GET',
                 headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'authorization': 'test'
+                'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTYzODk1NDA0NSwiZXhwIjoxNjM5MDQxMDQ1fQ.MR9scvL9Wt1QuLlzRje8XmlEV2NCwCC5MfxXwf_kp8YGvVFHwjUEC-lJ65FWcXS-nro65Ff47tXsqOVUp7CyNA'
                 }
 
-            }).then((resp) => { return resp.json()}).catch((err) => { return err}).finally( () => setIsLoading(false))
+            }).then((resp) => { return resp.json()}).catch((err) => { return err})
             const check = await responce;
             console.log(responce);
             console.log(check);
 
-            if(!check.error) {
-                setToDo(check.note);
+            if(check) {
+                setNote(check);
             }
     });
 
@@ -49,31 +47,25 @@ export default function MyNotes () {
             value: value,
             key: Math.random().toString(),
             },
-            ...prevBoard,
+            ...prevNote,
         ];
         });
     };
 
 
     const deleteItem = async (key) => {
-        //setData((prevTodo) => {
-        //return prevTodo.filter((todo) => todo.key != key);
-        //});
-
-        const responce = fetch(`https://borad-todo.herokuapp.com/api/boards/delete-one?user=61a37838753e9771d447d3fc&boardID=${key}`, {
-                method: 'GET',
+        const responce = fetch(`https://api-note-manager.herokuapp.com/v1/notes/${key}`, {
+                method: 'DELETE',
                 headers: {
-                Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'authorization': 'test'
+                'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTYzODk1NDA0NSwiZXhwIjoxNjM5MDQxMDQ1fQ.MR9scvL9Wt1QuLlzRje8XmlEV2NCwCC5MfxXwf_kp8YGvVFHwjUEC-lJ65FWcXS-nro65Ff47tXsqOVUp7CyNA'
                 }
-
             }).then((resp) => { return resp.json()}).catch((err) => { return err})
             const check = await responce;
             console.log(responce);
             console.log(check);
-            setDeleteToDo(true);
-
+            setDeleteNote(true);
+            getAllNote();
         };
 
     return (
@@ -84,12 +76,14 @@ export default function MyNotes () {
             data={note}
             keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
-              <NoteList item={item} deleteItem={deleteItem}/>
+              <NoteList item={item} deleteItem={deleteItem}
+
+              />
               
             )}
           />
           <View>
-            <AddNoteInput submitHandler={submitHandler} setDeleteToDo={setDeleteNote} />
+            <AddNoteInput submitHandler={submitHandler} setDeleteNote={setDeleteNote} setter={setNote} />
           </View>
         </View>
       </ComponentContainer>
